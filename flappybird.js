@@ -295,6 +295,7 @@ function startGame() {
     pipeArray = [];
     score = 0;
     velocityX = -2;
+    velocityY = 0; // 重置鸟的垂直速度
     difficultyLevel = 1;
     
     //clear any existing interval
