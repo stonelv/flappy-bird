@@ -77,6 +77,7 @@ window.onload = function() {
     //event listeners
     document.addEventListener("keydown", handleKeyDown);
     board.addEventListener("click", handleClick);
+    board.addEventListener("touchstart", handleTouchStart, { passive: false });
     
     //start game loop
     requestAnimationFrame(update);
@@ -260,7 +261,7 @@ function handleKeyDown(e) {
         } else if (gameState === "gameOver") {
             restartGame();
         }
-    } else if (e.code === "KeyP") {
+    } else if (e.code === "KeyP" || e.code === "Escape") {
         togglePause();
     } else if (e.code === "KeyM") {
         toggleSound();
@@ -268,6 +269,17 @@ function handleKeyDown(e) {
 }
 
 function handleClick() {
+    if (gameState === "start") {
+        startGame();
+    } else if (gameState === "playing") {
+        jump();
+    } else if (gameState === "gameOver") {
+        restartGame();
+    }
+}
+
+function handleTouchStart(e) {
+    e.preventDefault(); // 防止默认行为，如页面滚动
     if (gameState === "start") {
         startGame();
     } else if (gameState === "playing") {
@@ -351,8 +363,15 @@ function toggleSound() {
 
 function playSound(soundName) {
     if (soundEnabled && sounds[soundName]) {
-        sounds[soundName].currentTime = 0; //rewind to start
-        sounds[soundName].play().catch(e => console.log("Audio play failed:", e));
+        try {
+            sounds[soundName].currentTime = 0; //rewind to start
+            sounds[soundName].play().catch(e => {
+                // 浏览器自动播放限制导致的错误，静默处理
+                // 不影响游戏运行
+            });
+        } catch (e) {
+            // 其他音频错误，静默处理
+        }
     }
 }
 

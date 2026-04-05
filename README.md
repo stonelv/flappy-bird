@@ -39,10 +39,11 @@ Throughout the tutorial, you will learn how to create the game loop, add images 
 - **上箭头键**：跳跃
 - **X键**：跳跃
 - **P键**：暂停/继续游戏
+- **Esc键**：暂停/继续游戏
 - **M键**：切换音效开关
 
 ### 移动端
-- **点击屏幕**：开始游戏/跳跃/重新开始
+- **触控屏幕**：开始游戏/跳跃/重新开始
 
 ## 运行指南
 
