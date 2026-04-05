@@ -2,12 +2,45 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport", content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Flappy Bird</title>
         <link rel="stylesheet" href="flappybird.css">
-        <script src="flappybird.js"></script>
     </head>
     <body>
-        <canvas id="board"></canvas>
+        <div class="game-container">
+            <canvas id="board"></canvas>
+            
+            <div class="ui-overlay" id="startScreen">
+                <div class="title">Flappy Bird</div>
+                <div class="high-score" id="highScoreDisplay">最高分: 0</div>
+                <button class="btn" id="startBtn">开始游戏</button>
+            </div>
+            
+            <div class="ui-overlay" id="pauseScreen" style="display: none;">
+                <div class="title">游戏暂停</div>
+                <button class="btn" id="resumeBtn">继续游戏</button>
+                <button class="btn secondary" id="restartFromPauseBtn">重新开始</button>
+            </div>
+            
+            <div class="ui-overlay" id="gameOverScreen" style="display: none;">
+                <div class="title">游戏结束</div>
+                <div class="score">得分: <span id="finalScore">0</span></div>
+                <div class="high-score" id="gameOverHighScore">最高分: 0</div>
+                <button class="btn" id="restartBtn">重新开始</button>
+            </div>
+            
+            <div class="top-bar">
+                <div class="score-display">分数: <span id="currentScore">0</span></div>
+                <div class="controls">
+                    <button class="icon-btn" id="pauseBtn" style="display: none;">⏸️</button>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="soundToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <script src="flappybird.js"></script>
     </body>
 </html>
