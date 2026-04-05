@@ -40,6 +40,8 @@ const MAX_VELOCITY = -6;
 const MIN_OPENING_SPACE = boardHeight/6;
 const BASE_OPENING_SPACE = boardHeight/4;
 
+let pipeIntervalId = null;
+
 let startScreen;
 let pauseScreen;
 let gameOverScreen;
@@ -105,6 +107,7 @@ window.onload = function() {
     board.addEventListener("touchstart", handleTouch, { passive: false });
 
     updateHighScoreDisplay();
+    updateScoreDisplay();
     requestAnimationFrame(update);
 }
 
@@ -171,17 +174,23 @@ function updateHighScoreDisplay() {
     gameOverHighScoreDisplay.textContent = `最高分: ${highScore}`;
 }
 
+function updateScoreDisplay() {
+    currentScoreDisplay.textContent = Math.floor(score);
+}
+
 function startGame() {
     gameState = 'playing';
     startScreen.style.display = 'none';
     pauseBtn.style.display = 'block';
     resetGame();
+    startPipeInterval();
 }
 
 function pauseGame() {
     if (gameState === 'playing') {
         gameState = 'paused';
         pauseScreen.style.display = 'flex';
+        stopPipeInterval();
     }
 }
 
@@ -189,6 +198,7 @@ function resumeGame() {
     if (gameState === 'paused') {
         gameState = 'playing';
         pauseScreen.style.display = 'none';
+        startPipeInterval();
     }
 }
 
@@ -198,6 +208,7 @@ function restartGame() {
     gameOverScreen.style.display = 'none';
     pauseBtn.style.display = 'block';
     resetGame();
+    startPipeInterval();
 }
 
 function resetGame() {
@@ -206,22 +217,38 @@ function resetGame() {
     score = 0;
     velocityX = baseVelocityX;
     velocityY = 0;
-    currentScoreDisplay.textContent = '0';
+    updateScoreDisplay();
 }
 
 function gameOver() {
     gameState = 'gameOver';
     pauseBtn.style.display = 'none';
+    stopPipeInterval();
     
-    if (score > highScore) {
-        highScore = score;
+    const finalScore = Math.floor(score);
+    if (finalScore > highScore) {
+        highScore = finalScore;
         saveSettings();
         updateHighScoreDisplay();
     }
     
-    finalScoreDisplay.textContent = score;
+    finalScoreDisplay.textContent = finalScore;
     gameOverScreen.style.display = 'flex';
     playSound('die');
+}
+
+function startPipeInterval() {
+    if (pipeIntervalId !== null) {
+        clearInterval(pipeIntervalId);
+    }
+    pipeIntervalId = setInterval(placePipes, 1500);
+}
+
+function stopPipeInterval() {
+    if (pipeIntervalId !== null) {
+        clearInterval(pipeIntervalId);
+        pipeIntervalId = null;
+    }
 }
 
 function handleKeyDown(e) {
@@ -294,7 +321,7 @@ function update() {
         if (!pipe.passed && bird.x > pipe.x + pipe.width) {
             score += 0.5;
             pipe.passed = true;
-            currentScoreDisplay.textContent = Math.floor(score);
+            updateScoreDisplay();
             playSound('point');
         }
 
@@ -345,5 +372,3 @@ function detectCollision(a, b) {
            a.y < b.y + b.height &&
            a.y + a.height > b.y;
 }
-
-setInterval(placePipes, 1500);
